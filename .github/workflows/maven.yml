@@ -33,6 +33,11 @@ jobs:
           echo "Device: $DEVICE_NAME"
           echo "Platform Version: $PLATFORM_VERSION"
 
+      - name: List Test Classes
+        run: |
+          echo "Listing discovered test classes..."
+          find src/test/java -name "*Test.java" || true
+
       - name: Start Appium Server
         run: |
           echo "Starting Appium Server..."
@@ -41,13 +46,21 @@ jobs:
 
       - name: Run iOS Simulator Tests
         run: |
+          echo "Running Maven tests..."
           mvn clean test \
+            -Dsurefire.suiteXmlFiles=testng.xml \
             -DplatformName=$PLATFORM_NAME \
             -Denv=$ENV \
             -Dudid=$SIMULATOR_UDID \
             -DdeviceName="$DEVICE_NAME" \
-            -DplatformVersion=$PLATFORM_VERSION \
-            -Dsurefire.suiteXmlFiles=testng.xml
+            -DplatformVersion=$PLATFORM_VERSION -X
+
+      - name: Upload Appium Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-logs
+          path: appium.log
 
       - name: Cleanup (Shutdown Simulator & Kill Appium)
         if: always()
