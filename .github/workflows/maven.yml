@@ -5,7 +5,7 @@ on:
 
 jobs:
   ios-simulator-test:
-    runs-on: self-hosted   # Runs on your Mac (self-hosted runner)
+    runs-on: self-hosted
 
     env:
       PLATFORM_NAME: iOS
@@ -27,7 +27,6 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
-          echo "---- Debugging Environment Variables ----"
           echo "Platform Name: $PLATFORM_NAME"
           echo "Environment: $ENV"
           echo "UDID: $SIMULATOR_UDID"
@@ -50,12 +49,13 @@ jobs:
         run: |
           echo "---- Running Maven Tests ----"
           mvn clean test \
-            -Dsurefire.suiteXmlFiles=testng.xml \
+            -Dsurefire.suiteXmlFiles=src/test/resources/testng.xml \
             -DplatformName=$PLATFORM_NAME \
             -Denv=$ENV \
             -Dudid=$SIMULATOR_UDID \
             -DdeviceName="$DEVICE_NAME" \
-            -DplatformVersion=$PLATFORM_VERSION -X || echo "Maven did not execute tests!"
+            -DplatformVersion=$PLATFORM_VERSION \
+            -X -e
 
       - name: Upload Appium Logs
         if: always()
