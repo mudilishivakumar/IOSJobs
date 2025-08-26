@@ -49,7 +49,6 @@ jobs:
         run: |
           echo "---- Running Maven Tests ----"
           mvn clean test \
-            -Dsurefire.suiteXmlFiles=src/test/resources/testng.xml \
             -DplatformName=$PLATFORM_NAME \
             -Denv=$ENV \
             -Dudid=$SIMULATOR_UDID \
