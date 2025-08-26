@@ -25,6 +25,14 @@ jobs:
           xcrun simctl bootstatus $SIMULATOR_UDID -b
           xcrun simctl list devices | grep "$DEVICE_NAME"
 
+      - name: Debug Environment Variables
+        run: |
+          echo "Platform Name: $PLATFORM_NAME"
+          echo "Environment: $ENV"
+          echo "UDID: $SIMULATOR_UDID"
+          echo "Device: $DEVICE_NAME"
+          echo "Platform Version: $PLATFORM_VERSION"
+
       - name: Start Appium Server
         run: |
           echo "Starting Appium Server..."
@@ -34,8 +42,17 @@ jobs:
       - name: Run iOS Simulator Tests
         run: |
           mvn clean test \
-            -DplatformName=${PLATFORM_NAME} \
-            -Denv=${ENV} \
-            -Dudid=${SIMULATOR_UDID} \
-            -DdeviceName="${DEVICE_NAME}" \
-            -DplatformVersion=${PLATFORM_VERSION}
+            -DplatformName=$PLATFORM_NAME \
+            -Denv=$ENV \
+            -Dudid=$SIMULATOR_UDID \
+            -DdeviceName="$DEVICE_NAME" \
+            -DplatformVersion=$PLATFORM_VERSION \
+            -Dsurefire.suiteXmlFiles=testng.xml
+
+      - name: Cleanup (Shutdown Simulator & Kill Appium)
+        if: always()
+        run: |
+          echo "Shutting down simulator..."
+          xcrun simctl shutdown $SIMULATOR_UDID || true
+          echo "Killing Appium process..."
+          pkill -f appium || true
