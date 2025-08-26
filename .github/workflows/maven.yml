@@ -1,0 +1,41 @@
+name: Run iOS Appium Tests on Simulator (Local Mac)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-simulator-test:
+    runs-on: self-hosted   # Runs on your Mac (self-hosted runner)
+
+    env:
+      PLATFORM_NAME: iOS
+      ENV: local
+      SIMULATOR_UDID: F501615E-554D-463C-B417-BA0AE5B4F2A9
+      DEVICE_NAME: "iPhone 16 Pro"
+      PLATFORM_VERSION: "18.2"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Start iOS Simulator
+        run: |
+          echo "Booting iOS Simulator..."
+          xcrun simctl boot $SIMULATOR_UDID || true
+          xcrun simctl bootstatus $SIMULATOR_UDID -b
+          xcrun simctl list devices | grep "$DEVICE_NAME"
+
+      - name: Start Appium Server
+        run: |
+          echo "Starting Appium Server..."
+          nohup appium --base-path /wd/hub > appium.log 2>&1 &
+          sleep 10
+
+      - name: Run iOS Simulator Tests
+        run: |
+          mvn clean test \
+            -DplatformName=${PLATFORM_NAME} \
+            -Denv=${ENV} \
+            -Dudid=${SIMULATOR_UDID} \
+            -DdeviceName="${DEVICE_NAME}" \
+            -DplatformVersion=${PLATFORM_VERSION}
