@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="DAZN_Automation_Suite">
+    <test name="DAZN Test Execution">
+        <classes>
+            <class name="testcases.LoginCases"/>
+            <class name="testcases.HomeCases"/>
+            <class name="testcases.playercases"/>
+            <class name="testcases.Schedule"/>
+            <class name="testcases.SportspageCases"/>
+            <class name="testcases.languageSwitch"/>
+            <class name="testcases.HomeOfBoxing"/>
+            <class name="testcases.NFLTestCases"/>
+            <class name="testcases.NassrTvTestCases"/>
+            <class name="testcases.RallyTvTestCases"/>
+            <class name="testcases.UserProfileUpdate"/>
+            <class name="testcases.Profilecases"/>
+        </classes>
+    </test>
+</suite>
+
